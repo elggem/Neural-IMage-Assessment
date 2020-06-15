@@ -18,7 +18,7 @@ import torchvision.models as models
 
 from tensorboardX import SummaryWriter
 
-from dataset.dataset import AVADataset
+from dataset.dataset import GISETDataset
 
 from model.model import *
 
@@ -220,4 +220,3 @@ if __name__ == '__main__':
     config = parser.parse_args()
 
     main(config)
-
