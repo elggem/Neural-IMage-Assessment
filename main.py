@@ -85,7 +85,7 @@ def main(config):
                 images = data['image'].to(device)
                 labels = data['annotations'].to(device).float()
                 outputs = model(images)
-                outputs = outputs.view(-1, 10, 1)
+                outputs = outputs.view(-1, 1, 1)
 
                 optimizer.zero_grad()
 
