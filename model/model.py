@@ -5,7 +5,7 @@ import torch.nn as nn
 
 class NIMA(nn.Module):
     """Neural IMage Assessment model by Google"""
-    def __init__(self, base_model, num_classes=10):
+    def __init__(self, base_model, num_classes=1):
         super(NIMA, self).__init__()
         self.features = base_model.features
         self.classifier = nn.Sequential(
@@ -52,5 +52,3 @@ def emd_loss(p, q, r=2):
     for i in range(mini_batch_size):
         loss_vector.append(single_emd_loss(p[i], q[i], r=r))
     return sum(loss_vector) / mini_batch_size
-
-

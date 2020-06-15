@@ -29,13 +29,13 @@ def main(config):
     writer = SummaryWriter()
 
     train_transform = transforms.Compose([
-        transforms.Scale(256),
+        transforms.Resize(256),
         transforms.RandomCrop(224),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()])
 
     val_transform = transforms.Compose([
-        transforms.Scale(256),
+        transforms.Resize(256),
         transforms.RandomCrop(224),
         transforms.ToTensor()])
 
@@ -147,18 +147,6 @@ def main(config):
                     break
 
         print('Training completed.')
-
-        '''
-        # use tensorboard to log statistics instead
-        if config.save_fig:
-            # plot train and val loss
-            epochs = range(1, epoch + 2)
-            plt.plot(epochs, train_losses, 'b-', label='train loss')
-            plt.plot(epochs, val_losses, 'g-', label='val loss')
-            plt.title('EMD loss')
-            plt.legend()
-            plt.savefig('./loss.png')
-        '''
 
     if config.test:
         model.eval()

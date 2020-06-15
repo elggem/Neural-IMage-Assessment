@@ -43,8 +43,8 @@ model = model.to(device)
 model.eval()
 
 test_transform = transforms.Compose([
-    transforms.Scale(256), 
-    transforms.RandomCrop(224), 
+    transforms.Resize(256), 
+    transforms.RandomCrop(224),
     transforms.ToTensor()
     ])
 
@@ -78,6 +78,3 @@ for i, img in enumerate(test_imgs):
         f.write(str(img) + ' mean: %.3f | std: %.3f | GT: %.3f\n' % (mean, std, gt_mean))
     mean, std = 0.0, 0.0
     pbar.update()
-
-
-
