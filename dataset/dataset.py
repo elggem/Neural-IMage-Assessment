@@ -10,11 +10,11 @@ from torch.utils import data
 import torchvision.transforms as transforms
 
 
-class AVADataset(data.Dataset):
-    """AVA dataset
+class GISETDataset(data.Dataset):
+    """GISET dataset
 
     Args:
-        csv_file: a 11-column csv_file, column one contains the names of image files, column 2-11 contains the empiricial distributions of ratings
+        csv_file: a 2-column csv_file, column one contains the names of image files, column 2 contains the VMAF score for the image
         root_dir: directory to the images
         transform: preprocessing and augmentation of the training images
     """
@@ -28,7 +28,7 @@ class AVADataset(data.Dataset):
         return len(self.annotations)
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.root_dir, str(self.annotations.iloc[idx, 0]) + '.jpg')
+        img_name = os.path.join(self.root_dir, str(self.annotations.iloc[idx, 0]))
         image = Image.open(img_name).convert('RGB')
         annotations = self.annotations.iloc[idx, 1:].to_numpy()
         annotations = annotations.astype('float').reshape(-1, 1)
@@ -41,17 +41,16 @@ class AVADataset(data.Dataset):
 
 
 if __name__ == '__main__':
-
     # sanity check
-    root = './data/images'
-    csv_file = './data/train_labels.csv'
+    root = './sanity-check/samples'
+    csv_file = './sanity-check/test-annotation.csv'
     train_transform = transforms.Compose([
-        transforms.Scale(256), 
-        transforms.RandomCrop(224), 
-        transforms.RandomHorizontalFlip(), 
+        transforms.Resize(256),
+        transforms.RandomCrop(224),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor()
     ])
-    dset = AVADataset(csv_file=csv_file, root_dir=root, transform=train_transform)
+    dset = GISETDataset(csv_file=csv_file, root_dir=root, transform=train_transform)
     train_loader = data.DataLoader(dset, batch_size=4, shuffle=True, num_workers=4)
     for i, data in enumerate(train_loader):
         images = data['image']
