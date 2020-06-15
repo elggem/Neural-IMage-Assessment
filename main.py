@@ -70,10 +70,13 @@ def main(config):
         trainset = GISETDataset(csv_file=config.train_csv_file, root_dir=config.img_path, transform=train_transform)
         valset = GISETDataset(csv_file=config.val_csv_file, root_dir=config.img_path, transform=val_transform)
 
+        print('Preparing data loader')
         train_loader = torch.utils.data.DataLoader(trainset, batch_size=config.train_batch_size,
             shuffle=True, num_workers=config.num_workers)
         val_loader = torch.utils.data.DataLoader(valset, batch_size=config.val_batch_size,
             shuffle=False, num_workers=config.num_workers)
+
+        print('Starting training')
         # for early stopping
         count = 0
         init_val_loss = float('inf')
