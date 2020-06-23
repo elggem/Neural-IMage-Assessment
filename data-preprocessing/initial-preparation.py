@@ -2,10 +2,13 @@ import os
 import random
 import numpy as np
 
-path_drive_prefix = "/content/drive/My Drive/MSC/Deep_Learning_Project/Quality_Prediction/"
+path_drive_prefix = "/Users/ralf/Documents/github/_TUBForks/GTTS/"
 path_scores_labels = path_drive_prefix + "Labels/ParsedVMAF.csv"
 path_scores_labels_subset = path_drive_prefix + "Labels/ParsedVMAF_subset.csv"
 path_samples = path_drive_prefix + "Samples/"
+
+path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
+path_references = path_drive_prefix + "Reference/"
 
 samples = np.genfromtxt(path_scores_labels,
                              delimiter=",",
@@ -36,6 +39,29 @@ def generate_subset_scores():
           # print("found %d for %s" % (score_number,sample))
           outfile.write("%s/%s-%d.png,%.6f\n" % (sample, sample, score_number, score))
     outfile.close()
+
+
+# Generate scores for the Reference subset
+def generate_reference_list():
+    outfile = open(path_reference_pair_list, "w")
+    for sample_number, sample in enumerate(samples):
+      for score_number, score in enumerate(scores[sample_number]):
+        path_sample = "%s%s/%s-%d.png" % (path_samples, sample, sample, score_number)
+
+        reference = "_".join(sample.split("_")[:4])
+        path_reference = "%s%s/%s_%04d.png" % (path_references, reference, reference, score_number)
+        # print(path_reference)
+        if os.path.isfile(path_reference) and os.path.isfile(path_sample):
+          # print("found %d for %s" % (score_number,sample))
+          outfile.write("%s,%s\n" % (path_sample, path_reference))
+    outfile.close()
+
+# generate_reference_list()
+
+referencepairs = np.genfromtxt(path_reference_pair_list,
+                             delimiter=",",
+                             dtype=str,
+                             encoding='utf-8')
 
 
 # Loads the newly created file.
