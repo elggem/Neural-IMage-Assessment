@@ -3,6 +3,7 @@ import random
 import numpy as np
 import tensorflow as tf
 from IPython.display import Image
+from matplotlib.pyplot import imshow
 
 path_drive_prefix = "/Users/ralf/Documents/github/_TUBForks/GTTS/"
 path_scores_labels = path_drive_prefix + "Labels/ParsedVMAF.csv"
@@ -17,44 +18,52 @@ referencepairs = np.genfromtxt(path_reference_pair_list,
                              dtype=str,
                              encoding='utf-8')
 
+subset_samples = np.genfromtxt(path_scores_labels_subset,
+                             delimiter=",",
+                             dtype=str,
+                             encoding='utf-8',
+                             usecols=(0)).tolist()
+
+subset_scores = np.genfromtxt(path_scores_labels_subset,
+                             delimiter=",",
+                             usecols=(1))
 
 
 def sample_random_image_and_score():
     index = random.randint(0, len(referencepairs))
     sample = referencepairs[index,0]
     reference = referencepairs[index,1]
-    return sample,reference
+    sample = tf.io.decode_png(tf.io.read_file(sample))
+    reference = tf.io.decode_png(tf.io.read_file(reference))
+    score = subset_scores[subset_samples.index("/".join(referencepairs[index,0].split("/")[8:]))] #please fix me!
+    return sample,reference,score
 
+def random_patch_from_pair(sample_frame, reference_frame, height=224, width=224):
+    assert(sample_frame.shape == reference_frame.shape)
+    offset_width = random.randint(0, reference_frame.shape[1]-width)
+    offset_height = random.randint(0, reference_frame.shape[0]-height)
+    return [tf.image.crop_to_bounding_box(sample_frame,offset_height,offset_width,height,width),
+            tf.image.crop_to_bounding_box(reference_frame,offset_height,offset_width,height,width)]
 
+sample,reference,score = sample_random_image_and_score()
+sample_patch, reference_patch = random_patch_from_pair(sample, reference)
 
-sample,reference = sample_random_image_and_score()
-
+imshow(np.concatenate([sample_patch, reference_patch, reference_patch-sample_patch], axis=1))
 Image(filename=sample)
 Image(filename=reference)
 
-# Read images from file.
-im1 = tf.io.decode_png(tf.io.read_file(reference))
-im2 = tf.io.decode_png(tf.io.read_file(sample))
-# Compute PSNR over tf.uint8 Tensors.
-psnr1 = tf.image.psnr(im1, im2, max_val=255)
+def get_patch_weight():
+    partial_psnr = tf.image.psnr(sample_patch, reference_patch, max_val=255).numpy()
+    psnr = tf.image.psnr(sample, reference, max_val=255).numpy()
+    return partial_psnr / psnr
 
-# Compute PSNR over tf.float32 Tensors.
-im1 = tf.image.convert_image_dtype(im1, tf.float32)
-im2 = tf.image.convert_image_dtype(im2, tf.float32)
-psnr2 = tf.image.psnr(im1, im2, max_val=1.0)
-# psnr1 and psnr2 both have type tf.float32 and are almost equal.
-
-psnr1.numpy()
-psnr2.numpy()
+def get_patch_quality():
+    return score * get_patch_weight()
 
 
-
-
-
-
-
-
-
+get_patch_weight()
+get_patch_quality()
+score
 
 
 
