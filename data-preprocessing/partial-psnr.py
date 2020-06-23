@@ -45,42 +45,23 @@ def random_patch_from_pair(sample_frame, reference_frame, height=224, width=224)
     return [tf.image.crop_to_bounding_box(sample_frame,offset_height,offset_width,height,width),
             tf.image.crop_to_bounding_box(reference_frame,offset_height,offset_width,height,width)]
 
-sample,reference,score = sample_random_image_and_score()
-sample_patch, reference_patch = random_patch_from_pair(sample, reference)
 
-imshow(np.concatenate([sample_patch, reference_patch, reference_patch-sample_patch], axis=1))
-Image(filename=sample)
-Image(filename=reference)
-
-def get_patch_weight():
+def get_patch_weight(sample, reference, sample_patch, reference_patch):
     partial_psnr = tf.image.psnr(sample_patch, reference_patch, max_val=255).numpy()
     psnr = tf.image.psnr(sample, reference, max_val=255).numpy()
     return partial_psnr / psnr
 
-def get_patch_quality():
-    return score * get_patch_weight()
+def get_patch_quality(sample, reference, sample_patch, reference_patch, score):
+    return score * get_patch_weight(sample, reference, sample_patch, reference_patch)
 
 
-get_patch_weight()
-get_patch_quality()
-score
+sample, reference,score = sample_random_image_and_score()
+sample_patch, reference_patch = random_patch_from_pair(sample, reference)
 
+# Display patches and difference
+imshow(np.concatenate([sample_patch, reference_patch, reference_patch-sample_patch], axis=1))
 
+get_patch_weight(sample, reference, sample_patch, reference_patch)
+get_patch_quality(sample, reference, sample_patch, reference_patch, score)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
+display(sample, reference, sample_patch, reference_patch)
