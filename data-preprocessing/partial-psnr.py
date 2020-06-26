@@ -2,11 +2,6 @@ import os
 import random
 import numpy as np
 import tensorflow as tf
-config = tf.ConfigProto(
-        device_count = {'GPU': 0}
-    )
-sess = tf.Session(config=config)
-
 # from IPython.display import Image
 from matplotlib.pyplot import imshow
 import matplotlib.pyplot as plt
