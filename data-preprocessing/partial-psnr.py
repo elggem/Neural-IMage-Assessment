@@ -75,8 +75,8 @@ def get_patch_quality(sample, reference, sample_patch, reference_patch, score):
 def generate_distribution_labels():
     outfile = open(path_patch_distribution_labels, "w")
     outfile.write("#sample-path,mean,std,histogram(100dim)")
-    number_of_repetitions = 10
-    for sam,ref in referencepairs[:10]:
+    number_of_repetitions = 1000
+    for sam,ref in referencepairs:
         print(sam)
         sample, reference, score = load_image_and_score(sam, ref)
         patch_quality_distribution = []
