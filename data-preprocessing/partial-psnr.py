@@ -118,8 +118,14 @@ for sample in sample_names:
     vmaf_score = subset_scores[subset_samples.index(sample)]
     vmaf_scores.append(vmaf_score)
 vmaf_scores = np.array(vmaf_scores)
-
 plt.gca().set(title="VMAF distribution of samples", ylabel='Frequency'); plt.hist(vmaf_scores, bins=100)
+
+resolution_tags = []
+for sample in sample_names:
+    for i, resolution in enumerate(['640', '1280', '1920']):
+        if resolution in sample:
+            resolution_tags.append(i)
+
 
 
 means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
@@ -131,7 +137,10 @@ plt.gca().set(title="Sigma Distribution of PQ Labels", ylabel='Frequency'); plt.
 # plt.show()
 
 plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
-plt.gca().set(title="Mean vs Sigma Distributions of PQ Labels"); plt.scatter(means,std)
+plt.gca().set(title="Mean vs Sigma Distributions of PQ Labels, color coded by original VMAF score"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=vmaf_scores)
+
+
+plt.gca().set(title="mean vs std in patch quality distributions, color coded by resolution"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=resolution_tags)
 
 # Examples of images with low Sigma:
 for i,deviation in enumerate(std):
