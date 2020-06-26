@@ -88,7 +88,6 @@ def generate_distribution_labels():
         mean = np.array(patch_quality_distribution).mean()
         std = np.std(np.array(patch_quality_distribution))
         outfile.write("%s,%.8e,%.8e,%s\n" % (sam, mean, std, ",".join(format(x, ".8e") for x in histogram)))
-
     outfile.close()
 
 generate_distribution_labels()
