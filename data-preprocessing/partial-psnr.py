@@ -61,6 +61,7 @@ def random_patch_from_pair(sample_frame, reference_frame, height=224, width=224)
             tf.image.crop_to_bounding_box(reference_frame,offset_height,offset_width,height,width)]
 
 
+
 def get_patch_weight(sample, reference, sample_patch, reference_patch):
     partial_psnr = tf.image.psnr(sample_patch, reference_patch, max_val=255).numpy()
     psnr = tf.image.psnr(sample, reference, max_val=255).numpy()
@@ -70,27 +71,65 @@ def get_patch_quality(sample, reference, sample_patch, reference_patch, score):
     return score * get_patch_weight(sample, reference, sample_patch, reference_patch)
 
 
+def strided_patches_from_pair(sample_frame, reference_frame, height=224, width=224, stride_factor=4):
+    sample_stack = tf.image.extract_patches(images=[sample_frame],
+                           sizes=[1, height, width, 1],
+                           strides=[1, height/stride_factor, width/stride_factor, 1],
+                           rates=[1, 1, 1, 1],
+                           padding='VALID')
+    reference_stack = tf.image.extract_patches(images=[reference_frame],
+                           sizes=[1, height, width, 1],
+                           strides=[1, height/stride_factor, width/stride_factor, 1],
+                           rates=[1, 1, 1, 1],
+                           padding='VALID')
+    return [tf.reshape(sample_stack, (-1,224,224,3)), tf.reshape(reference_stack, (-1,224,224,3))]
 
+
+# sample, reference,score = sample_random_image_and_score()
+# sample_patches, reference_patches =  strided_patches_from_pair(sample, reference)
+# sample_patches.shape
+# distribution = get_patch_quality(sample, reference, sample_patches, reference_patches, score)
+# plt.gca().set(title="xxx", ylabel='Frequency'); plt.hist(distribution, bins=50)
+# i = 100
+# imshow(np.concatenate([sample_patches[i], reference_patches[i], reference_patches[i]-sample_patches[i]], axis=1))
 
 def generate_distribution_labels():
     outfile = open(path_patch_distribution_labels, "w")
-    outfile.write("#sample-path,mean,std,histogram(100dim)")
-    number_of_repetitions = 1000
-    for sam,ref in referencepairs:
-        print(sam)
+    outfile.write("#sample-path,mean,std,histogram(100dim)\n")
+    for i,X in enumerate(referencepairs):
+        sam,ref = X
+        print("%d / %d" % (i, len(referencepairs)))
         sample, reference, score = load_image_and_score(sam, ref)
-        patch_quality_distribution = []
-        for i in range(number_of_repetitions):
-            sample_patch, reference_patch = random_patch_from_pair(sample, reference)
-            patch_quality_distribution.append(get_patch_quality(sample, reference, sample_patch, reference_patch, score))
-            print("%04i/%04i" % (i+1, number_of_repetitions))
-        histogram = np.histogram(patch_quality_distribution, bins=100, range=(0.0,100.0), density=True)[0]
+        sample_stack, reference_stack =  strided_patches_from_pair(sample, reference)
+        patch_quality_distribution = get_patch_quality(sample, reference, sample_stack, reference_stack, score)
+
+        histogram = np.histogram(patch_quality_distribution, bins=100, range=(0.0,150.0), density=True)[0]
         mean = np.array(patch_quality_distribution).mean()
         std = np.std(np.array(patch_quality_distribution))
         outfile.write("%s,%.8e,%.8e,%s\n" % (sam, mean, std, ",".join(format(x, ".8e") for x in histogram)))
     outfile.close()
 
 generate_distribution_labels()
+
+# means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
+# std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
+# means
+# std
+# plt.gca().set(title="xxx", ylabel='Frequency'); plt.hist(means, bins=50)
+# plt.gca().set(title="xxx", ylabel='Frequency'); plt.hist(std, bins=50)
+# plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def demo_partial_psnr():
