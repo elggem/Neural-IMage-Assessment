@@ -113,12 +113,14 @@ generate_distribution_labels()
 
 sample_names = np.genfromtxt(path_patch_distribution_labels,delimiter=",",dtype=str,encoding='utf-8',usecols=(0)).tolist()
 
+cd ~/Desktop
+
 vmaf_scores = []
 for sample in sample_names:
     vmaf_score = subset_scores[subset_samples.index(sample)]
     vmaf_scores.append(vmaf_score)
 vmaf_scores = np.array(vmaf_scores)
-plt.gca().set(title="VMAF distribution of samples", ylabel='Frequency'); plt.hist(vmaf_scores, bins=100)
+plt.gca().set(title="VMAF distribution of samples", ylabel='Frequency'); plt.hist(vmaf_scores, bins=100); plt.savefig('vmaf_distribution_original_labels.png')
 
 resolution_tags = []
 for sample in sample_names:
@@ -126,28 +128,36 @@ for sample in sample_names:
         if resolution in sample:
             resolution_tags.append(i)
 
+bitrate_tags = []
+for sample in sample_names:
+    bitrate_tags.append(int(sample.split("_")[-8]))
+bitrate_tags = np.array(bitrate_tags)
+plt.gca().set(title="distribution of bitrates", ylabel='Frequency'); plt.hist(bitrate_tags, bins=100)
+
 
 
 means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
 std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
 means.max()
 std.shape
-plt.gca().set(title="Mean Distribution of PQ Labels", ylabel='Frequency'); plt.hist(means, bins=100)
-plt.gca().set(title="Sigma Distribution of PQ Labels", ylabel='Frequency'); plt.hist(std, bins=100)
+plt.gca().set(title="Mean Distribution of PQ Labels", ylabel='Frequency'); plt.hist(means, bins=100); plt.savefig('mean_distribution_patchquality.png')
+
+plt.gca().set(title="Standard Deviation Distribution of PQ Labels", ylabel='Frequency'); plt.hist(std, bins=100);  plt.savefig('std_distribution_patchquality.png')
 # plt.show()
 
 plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
-plt.gca().set(title="Mean vs Sigma Distributions of PQ Labels, color coded by original VMAF score"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=vmaf_scores)
+plt.gca().set(title="Mean vs Standard Deviation Distributions of PQ Labels, color coded by original VMAF score"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=vmaf_scores);  plt.savefig('mean_v_std_distributions_patchquality.png')
 
+plt.gca().set(title="mean vs std in patch quality distributions, color coded by resolution\n480p: green, 720p: blue, 1080p: grey"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=resolution_tags, cmap='Accent');  plt.savefig('mean_v_std_distributions_resolution_patchquality.png')
 
-plt.gca().set(title="mean vs std in patch quality distributions, color coded by resolution"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=resolution_tags)
+plt.gca().set(title="mean vs std in patch quality distributions, color coded by bitrate"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.scatter(means,std, c=bitrate_tags);  plt.savefig('mean_v_std_distributions_bitrate_patchquality.png')
 
 # Examples of images with low Sigma:
 for i,deviation in enumerate(std):
-    if deviation > 15:
+    if std[i]>15:
         imshow(tf.io.decode_png(tf.io.read_file(path_samples + sample_names[i])))
+        print(sample_names[i])
         plt.show()
-        break
 
 
 def demo_partial_psnr():
