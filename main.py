@@ -163,7 +163,7 @@ def main(config):
         for data in test_loader:
             image = data['image'].to(device)
             output = model(image)
-            output = output.view(10, 1)
+            output = output.view(100, 1)
             predicted_mean, predicted_std = 0.0, 0.0
             for i, elem in enumerate(output, 1):
                 predicted_mean += i * elem
