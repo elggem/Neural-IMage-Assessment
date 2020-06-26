@@ -14,8 +14,11 @@ path_scores_labels = path_drive_prefix + "Labels/ParsedVMAF.csv"
 path_scores_labels_subset = path_drive_prefix + "Labels/ParsedVMAF_subset.csv"
 path_samples = path_drive_prefix + "Samples/"
 
-path_reference_pair_list = path_drive_prefix + "Labels/referencepairs_nopath.csv"
+path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
 path_references = path_drive_prefix + "Reference/"
+
+path_patch_distribution_labels = path_drive_prefix + "Labels/patchdistribution.csv"
+
 
 referencepairs = np.genfromtxt(path_reference_pair_list,
                              delimiter=",",
@@ -32,8 +35,6 @@ subset_scores = np.genfromtxt(path_scores_labels_subset,
                              delimiter=",",
                              usecols=(1))
 
-
-referencepairs[0]
 
 print("VMAF Min: %f, Max: %f" % (subset_scores.min(), subset_scores.max()))
 
@@ -70,23 +71,27 @@ def get_patch_quality(sample, reference, sample_patch, reference_patch, score):
 
 
 
-# Data annotation
-sample_histogram = np.zeros((0,101))
-number_of_repetitions = 10
-for sam,ref in referencepairs:
-    sample, reference, score = load_image_and_score(sam, ref)
-    patch_quality_distribution = []
-    for _ in range(number_of_repetitions):
-        sample_patch, reference_patch = random_patch_from_pair(sample, reference)
-        patch_quality_distribution.append(get_patch_quality(sample, reference, sample_patch, reference_patch, score))
-    histogram = np.histogram(patch_quality_distribution, bins=100, range=(0.0,100.0), density=True)[0]
-    histogram = np.insert(histogram, 0, subset_samples.index(sam), axis=0)
-    sample_histogram = np.vstack([sample_histogram, histogram])
 
-sample_histogram.shape
-len(referencepairs)
-sample_histogram
+def generate_distribution_labels():
+    outfile = open(path_patch_distribution_labels, "w")
+    outfile.write("#sample-path,mean,std,histogram(100dim)")
+    number_of_repetitions = 10
+    for sam,ref in referencepairs[:10]:
+        print(sam)
+        sample, reference, score = load_image_and_score(sam, ref)
+        patch_quality_distribution = []
+        for i in range(number_of_repetitions):
+            sample_patch, reference_patch = random_patch_from_pair(sample, reference)
+            patch_quality_distribution.append(get_patch_quality(sample, reference, sample_patch, reference_patch, score))
+            print("%04i/%04i" % (i+1, number_of_repetitions))
+        histogram = np.histogram(patch_quality_distribution, bins=100, range=(0.0,100.0), density=True)[0]
+        mean = np.array(patch_quality_distribution).mean()
+        std = np.std(np.array(patch_quality_distribution))
+        outfile.write("%s,%.8e,%.8e,%s\n" % (sam, mean, std, ",".join(format(x, ".8e") for x in histogram)))
 
+    outfile.close()
+
+generate_distribution_labels()
 
 
 def demo_partial_psnr():

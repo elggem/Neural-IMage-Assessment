@@ -10,7 +10,7 @@ path_scores_labels = path_drive_prefix + "Labels/ParsedVMAF.csv"
 path_scores_labels_subset = path_drive_prefix + "Labels/ParsedVMAF_subset.csv"
 path_samples = path_drive_prefix + "Samples/"
 
-path_reference_pair_list = path_drive_prefix + "Labels/referencepairs_nopath.csv"
+path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
 path_references = path_drive_prefix + "Reference/"
 
 samples = np.genfromtxt(path_scores_labels,
@@ -76,6 +76,10 @@ subset_samples = np.genfromtxt(path_scores_labels_subset,
 subset_scores = np.genfromtxt(path_scores_labels_subset,
                              delimiter=",",
                              usecols=(1))
+
+referencepairs.shape
+subset_samples.shape
+
 
 
 # display a random sample and score
