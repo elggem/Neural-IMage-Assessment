@@ -10,7 +10,7 @@ from torch.utils import data
 import torchvision.transforms as transforms
 
 
-class GISETDataset(data.Dataset):
+class GTTSDataset(data.Dataset):
     """GISET dataset
 
     Args:
@@ -30,8 +30,8 @@ class GISETDataset(data.Dataset):
     def __getitem__(self, idx):
         img_name = os.path.join(self.root_dir, str(self.annotations.iloc[idx, 0]))
         image = Image.open(img_name).convert('RGB')
-        annotations = self.annotations.iloc[idx, 1:].to_numpy()
-        annotations = annotations.astype('float').reshape(-1, 1)
+        annotations = self.annotations.iloc[idx, 3:].to_numpy() # skipping mean and std columns 2 and 3
+        annotations = annotations.astype('float').reshape(-1, 100)
         sample = {'img_id': img_name, 'image': image, 'annotations': annotations}
 
         if self.transform:

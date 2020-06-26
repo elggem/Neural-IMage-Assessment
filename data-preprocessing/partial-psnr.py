@@ -17,7 +17,7 @@ path_samples = path_drive_prefix + "Samples/"
 path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
 path_references = path_drive_prefix + "Reference/"
 
-path_patch_distribution_labels = path_drive_prefix + "Labels/patchdistribution.csv"
+path_patch_distribution_labels = path_drive_prefix + "Labels/pq_labels_all.csv"
 
 
 referencepairs = np.genfromtxt(path_reference_pair_list,
@@ -111,25 +111,24 @@ def generate_distribution_labels():
 
 generate_distribution_labels()
 
-# means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
-# std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
-# means
-# std
-# plt.gca().set(title="xxx", ylabel='Frequency'); plt.hist(means, bins=50)
-# plt.gca().set(title="xxx", ylabel='Frequency'); plt.hist(std, bins=50)
+sample_names = np.genfromtxt(path_patch_distribution_labels,delimiter=",",dtype=str,encoding='utf-8',usecols=(0)).tolist()
+means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
+std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
+means.max()
+std.shape
+plt.gca().set(title="Mean Distribution of PQ Labels", ylabel='Frequency'); plt.hist(means, bins=100)
+plt.gca().set(title="Sigma Distribution of PQ Labels", ylabel='Frequency'); plt.hist(std, bins=100)
 # plt.show()
 
+plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
+plt.gca().set(title="Mean vs Sigma Distributions of PQ Labels"); plt.scatter(means,std)
 
-
-
-
-
-
-
-
-
-
-
+# Examples of images with low Sigma:
+for i,deviation in enumerate(std):
+    if deviation > 15:
+        imshow(tf.io.decode_png(tf.io.read_file(path_samples + sample_names[i])))
+        plt.show()
+        break
 
 
 def demo_partial_psnr():

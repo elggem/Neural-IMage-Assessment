@@ -67,8 +67,8 @@ def main(config):
     print('Trainable params: %.2f million' % (param_num / 1e6))
 
     if config.train:
-        trainset = GISETDataset(csv_file=config.train_csv_file, root_dir=config.img_path, transform=train_transform)
-        valset = GISETDataset(csv_file=config.val_csv_file, root_dir=config.img_path, transform=val_transform)
+        trainset = GTTSDataset(csv_file=config.train_csv_file, root_dir=config.img_path, transform=train_transform)
+        valset = GTTSDataset(csv_file=config.val_csv_file, root_dir=config.img_path, transform=val_transform)
 
         print('Preparing data loader')
         train_loader = torch.utils.data.DataLoader(trainset, batch_size=config.train_batch_size,
@@ -88,7 +88,7 @@ def main(config):
                 images = data['image'].to(device)
                 labels = data['annotations'].to(device).float()
                 outputs = model(images)
-                outputs = outputs.view(-1, 1, 1)
+                outputs = outputs.view(-1, 100, 1)
 
                 optimizer.zero_grad()
 
