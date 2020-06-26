@@ -2,12 +2,15 @@ import os
 import random
 import numpy as np
 
-path_drive_prefix = "/Users/ralf/Documents/github/_TUBForks/GTTS/"
+# For running in Editor on Desktop
+# cd /Users/ralf/Documents/github/_TUBForks/Neural-IMage-Assessment
+
+path_drive_prefix = "../GTTS/"
 path_scores_labels = path_drive_prefix + "Labels/ParsedVMAF.csv"
 path_scores_labels_subset = path_drive_prefix + "Labels/ParsedVMAF_subset.csv"
 path_samples = path_drive_prefix + "Samples/"
 
-path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
+path_reference_pair_list = path_drive_prefix + "Labels/referencepairs_nopath.csv"
 path_references = path_drive_prefix + "Reference/"
 
 samples = np.genfromtxt(path_scores_labels,
@@ -53,7 +56,7 @@ def generate_reference_list():
         # print(path_reference)
         if os.path.isfile(path_reference) and os.path.isfile(path_sample):
           # print("found %d for %s" % (score_number,sample))
-          outfile.write("%s,%s\n" % (path_sample, path_reference))
+          outfile.write("%s/%s-%d.png,%s/%s_%04d.png\n" % (sample, sample, score_number, reference, reference, score_number))
     outfile.close()
 
 # generate_reference_list()
