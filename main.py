@@ -18,7 +18,7 @@ import torchvision.models as models
 
 from tensorboardX import SummaryWriter
 
-from dataset.dataset import GISETDataset
+from dataset.dataset import GTTSDataset
 
 from model.model import *
 
@@ -155,7 +155,7 @@ def main(config):
         model.eval()
         # compute mean score
         test_transform = val_transform
-        testset = GISETDataset(csv_file=config.test_csv_file, root_dir=config.img_path, transform=val_transform)
+        testset = GTTSDataset(csv_file=config.test_csv_file, root_dir=config.img_path, transform=val_transform)
         test_loader = torch.utils.data.DataLoader(testset, batch_size=config.test_batch_size, shuffle=False, num_workers=config.num_workers)
 
         mean_preds = []
