@@ -112,6 +112,16 @@ def generate_distribution_labels():
 generate_distribution_labels()
 
 sample_names = np.genfromtxt(path_patch_distribution_labels,delimiter=",",dtype=str,encoding='utf-8',usecols=(0)).tolist()
+
+vmaf_scores = []
+for sample in sample_names:
+    vmaf_score = subset_scores[subset_samples.index(sample)]
+    vmaf_scores.append(vmaf_score)
+vmaf_scores = np.array(vmaf_scores)
+
+plt.gca().set(title="VMAF distribution of samples", ylabel='Frequency'); plt.hist(vmaf_scores, bins=100)
+
+
 means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
 std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
 means.max()
