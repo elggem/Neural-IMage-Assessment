@@ -18,6 +18,8 @@ path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
 path_references = path_drive_prefix + "Reference/"
 
 path_patch_distribution_labels = path_drive_prefix + "Labels/pq_labels_all.csv"
+path_approximate_normal_variable_sigma_labels = path_drive_prefix + "Labels/anv_labels_all.csv"
+path_approximate_normal_fixed_sigma_labels = path_drive_prefix + "Labels/anf_labels_all.csv"
 
 
 referencepairs = np.genfromtxt(path_reference_pair_list,
@@ -136,8 +138,8 @@ plt.gca().set(title="distribution of bitrates", ylabel='Frequency'); plt.hist(bi
 
 
 
-means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1), skip_header=1)
-std = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2), skip_header=1)
+means = np.genfromtxt(path_approximate_normal_fixed_sigma_labels,delimiter=",",usecols=(1))
+std = np.genfromtxt(path_approximate_normal_fixed_sigma_labels,delimiter=",",usecols=(2))
 means.max()
 std.shape
 plt.gca().set(title="Mean Distribution of PQ Labels", ylabel='Frequency'); plt.hist(means, bins=100); plt.savefig('mean_distribution_patchquality.png')
