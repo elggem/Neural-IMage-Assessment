@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # For running in Editor on Desktop
 # cd /Users/ralf/Documents/github/_TUBForks/Neural-IMage-Assessment
 path_drive_prefix = "../GTTS/"
-path_patch_distribution_labels = path_drive_prefix + "Labels/pq_labels_all.csv"
+path_patch_distribution_labels = path_drive_prefix + "Labels/pqd_labels_all.csv"
 path_approximate_normal_variable_sigma_labels = path_drive_prefix + "Labels/anv_labels_all.csv"
 path_approximate_normal_fixed_sigma_labels = path_drive_prefix + "Labels/anf_labels_all.csv"
 

@@ -17,7 +17,7 @@ path_samples = path_drive_prefix + "Samples/"
 path_reference_pair_list = path_drive_prefix + "Labels/referencepairs.csv"
 path_references = path_drive_prefix + "Reference/"
 
-path_patch_distribution_labels = path_drive_prefix + "Labels/pq_labels_all.csv"
+path_patch_distribution_labels = path_drive_prefix + "Labels/pqd_labels_all.csv"
 path_approximate_normal_variable_sigma_labels = path_drive_prefix + "Labels/anv_labels_all.csv"
 path_approximate_normal_fixed_sigma_labels = path_drive_prefix + "Labels/anf_labels_all.csv"
 
@@ -222,3 +222,47 @@ def demo_scaling_comparison():
 
 
     imshow(tf.image.resize(sample, [256,256], method='nearest'))
+
+
+
+
+## Heatmaps
+cd ~/Desktop
+
+def scale(im, nR, nC):
+  nR0 = len(im)     # source number of rows
+  nC0 = len(im[0])  # source number of columns
+  return [[ im[int(nR0 * r / nR)][int(nC0 * c / nC)]
+             for c in range(nC)] for r in range(nR)]
+import random
+
+
+
+def generate_random_heatmaps():
+    shuffled_pairs = random.sample(referencepairs.tolist(), len(referencepairs.tolist()))
+    for i,X in enumerate(shuffled_pairs[:10]):
+        sam,ref = X
+        sample, reference, score = load_image_and_score(sam, ref)
+        sample_stack, reference_stack =  strided_patches_from_pair(sample, reference)
+        patch_quality_distribution = get_patch_quality(sample, reference, sample_stack, reference_stack, score)
+        patch_quality_heatmap = patch_quality_distribution.reshape((16,-1))
+        patch_quality_heatmap = scale(patch_quality_heatmap, 1080, 1920)
+        plt.rcParams.update({'figure.figsize':(18,10), 'figure.dpi':80})
+        plt.gca().set(title="%s patch quality (Partial PSNR from provided VMAF) heatmap" % (sam.split("/")[-1]));
+        image = imshow(sample); heatmap = imshow(patch_quality_heatmap, interpolation='nearest', cmap='plasma', alpha=0.4); plt.colorbar(); plt.savefig("%s" % (sam.split("/")[-1]))
+        plt.clf()
+
+generate_random_heatmaps()
+
+
+
+
+
+
+
+
+
+
+
+
+#
