@@ -2,7 +2,7 @@
 
 #SBATCH -o "./hpc_output.log"   # Output-File -> somehow SLURM seems to be buffering stuff, not updating this file in "realtime"
 #SBATCH -D .                    # Working Directory
-#SBATCH -J hpc-tutorial     	# Job Name
+#SBATCH -J nima-pqd     	# Job Name
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=40
 #SBATCH --gres=gpu:tesla:2	# request two GPUs
@@ -17,7 +17,6 @@
 #Using base environment.
 # source activate $1
 python $2 | tee > hpc.log
-
 
 # To run do
 # sbatch hpc_gpu_job.sh ./train.sh
