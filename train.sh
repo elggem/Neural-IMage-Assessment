@@ -10,5 +10,5 @@ python main.py --img_path "../GTTS/Samples" \
 --ckpt_path ../checkpoints \
 --epochs 100 \
 --early_stopping_patience 10 \
---multi-gpu True \
---gpu_ids [0,1]
+--multi_gpu True \
+--gpu_ids 0,1
