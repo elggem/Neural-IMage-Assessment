@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH -o "./hpc_output.log"   # Output-File -> somehow SLURM seems to be buffering stuff, not updating this file in "realtime"
+#SBATCH -o "./hpc_output_$1.log"   # Output-File -> somehow SLURM seems to be buffering stuff, not updating this file in "realtime"
 #SBATCH -D .                    # Working Directory
-#SBATCH -J nima-pqd     	# Job Name
+#SBATCH -J nima-pqd             # Job Name
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=40
-#SBATCH --gres=gpu:tesla:2	# request two GPUs
+#SBATCH --cpus-per-task=8
+#SBATCH --gres=gpu:tesla:1      # request two GPUs
 
 #SBATCH --time=09:00:00 # expected runtime
 #SBATCH --partition=gpu
@@ -15,8 +15,9 @@
 #SBATCH --mail-user=mayet@campus.tu-berlin.de
 
 #Using base environment.
-# source activate $1
-python $2 | tee > hpc.log
+source ~/miniconda3/bin/activate base
+module load nvidia/cuda/10.1
+./train.sh $1 | tee > hpc_job_$1.log
 
 # To run do
-# sbatch hpc_gpu_job.sh ./train.sh
+# sbatch hpc_gpu_job.sh anv/anf/pqd

@@ -2,7 +2,7 @@
 
 import argparse
 import os
-
+from PIL import Image
 import numpy as np
 import matplotlib
 # matplotlib.use('Agg')
@@ -22,20 +22,19 @@ from dataset.dataset import GTTSDataset
 
 from model.model import *
 
-
 def main(config):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     writer = SummaryWriter()
 
     train_transform = transforms.Compose([
-        transforms.Resize(256),
+        transforms.Resize(256, 0), # NEAREST
         transforms.RandomCrop(224),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor()])
 
     val_transform = transforms.Compose([
-        transforms.Resize(256),
+        transforms.Resize(256, 0),
         transforms.RandomCrop(224),
         transforms.ToTensor()])
 
