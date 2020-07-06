@@ -11,7 +11,6 @@ import torchvision.transforms as transforms
 
 from model.model import *
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, help='path to pretrained model')
 parser.add_argument('--test_csv', type=str, help='test csv file')
@@ -43,7 +42,7 @@ model = model.to(device)
 model.eval()
 
 test_transform = transforms.Compose([
-    transforms.Resize(256), 
+    transforms.Resize(256, 0),
     transforms.RandomCrop(224),
     transforms.ToTensor()
     ])
@@ -54,7 +53,7 @@ pbar = tqdm(total=len(test_imgs))
 
 mean, std = 0.0, 0.0
 for i, img in enumerate(test_imgs):
-    im = Image.open(os.path.join(args.test_images, str(img) + '.jpg'))
+    im = Image.open(os.path.join(args.test_images, str(img) + '.png'))
     im = im.convert('RGB')
     imt = test_transform(im)
     imt = imt.unsqueeze(dim=0)
