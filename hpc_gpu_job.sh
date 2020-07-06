@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH -o "./hpc_output_pqd.log"   # Output-File -> somehow SLURM seems to be buffering stuff, not updating this file in "realtime"
-#SBATCH -D .                    # Working Directory
-#SBATCH -J nima-pqd             # Job Name
+#SBATCH -o "./hpc_output_pqd.log"   # Output-File
+#SBATCH -D .                        # Working Directory
+#SBATCH -J nima-pqd                 # Job Name
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:tesla:1      # request two GPUs
+#SBATCH --gres=gpu:tesla:1          # request one GPU
 
 #SBATCH --time=09:00:00 # expected runtime
 #SBATCH --partition=gpu
