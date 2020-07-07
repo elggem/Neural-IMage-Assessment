@@ -51,8 +51,8 @@ model.eval()
 
 test_transform = transforms.Compose([
     transforms.Resize(256, 0),
-    transforms.RandomCrop(224)#,
-    # transforms.ToTensor()
+    transforms.RandomCrop(224),
+    transforms.ToTensor()
     ])
 
 test_df = pd.read_csv(args.test_csv, header=None)
