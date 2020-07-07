@@ -32,14 +32,26 @@ pqd_annotations[0,2:].sum()
 anv_annotations[0,2:].sum()
 anf_annotations[:,2:].sum(axis=1)
 
-foo = pqd_annotations[0,2:]
-foo /= foo.sum()
-foo.sum()
 
+## Tests related to Probability Mass bug
+orig_pqd = pqd_annotations[0,2:]
+orig_mean = pqd_annotations[0,0]
+orig_std = pqd_annotations[0,1]
 
+norm_pqd = orig_pqd / orig_pqd.sum()
 
+mean = 0
+for j, e in enumerate(bar, 1):
+    mean += j * e * 1.5     # matching original 1...150 range
+std = 0
+for k, e in enumerate(bar, 1):
+    std += e * ((k * 1.5) - mean) ** 2
+std = std ** 0.5
 
+mean
+orig_mean
 
-
+std
+orig_std
 
 #

@@ -82,9 +82,9 @@ for i, img in enumerate(test_imgs):
     out = out.numpy().reshape(100)
 
     for j, e in enumerate(out, 1):
-        mean += j * e
+        mean += j * e * 1.5      # 1.5 to match original 0...150 range
     for k, e in enumerate(out, 1):
-        std += e * (k - mean) ** 2
+        std += e * ((k * 1.5) - mean) ** 2 # 1.5 to match original 0...150 range
     std = std ** 0.5
 
     # gt = test_df[test_df[0] == img].to_numpy()[:, 3:].reshape(100, 1)
