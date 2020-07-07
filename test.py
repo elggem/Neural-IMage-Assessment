@@ -8,7 +8,7 @@ from tqdm import tqdm
 import torch
 import torchvision.models as models
 import torchvision.transforms as transforms
-
+from matplotlib.pyplot import imshow
 from model.model import *
 
 parser = argparse.ArgumentParser()
@@ -19,6 +19,7 @@ parser.add_argument('--predictions', type=str, help='output file to store predic
 args = parser.parse_args()
 
 # Running in Hydrogen
+# cd /Users/ralf/Documents/github/_TUBForks/Neural-IMage-Assessment
 # class Dummy(object):
 #     pass
 # args = Dummy()
@@ -50,16 +51,24 @@ model.eval()
 
 test_transform = transforms.Compose([
     transforms.Resize(256, 0),
-    transforms.RandomCrop(224),
-    transforms.ToTensor()
+    transforms.RandomCrop(224)#,
+    # transforms.ToTensor()
     ])
 
 test_df = pd.read_csv(args.test_csv, header=None)
 test_imgs = test_df[0]
 pbar = tqdm(total=len(test_imgs))
 
-i = 0
-img = test_imgs[0]
+# For testing of transform in hydrogen
+# i = 0
+# img = test_imgs[40]
+# plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
+# im = Image.open(os.path.join(args.test_images, str(img)))
+# imshow(im)
+# im = im.convert('RGB')
+# imt = test_transform(im)
+# imshow(imt)
+# imt
 
 mean, std = 0.0, 0.0
 for i, img in enumerate(test_imgs):
