@@ -9,5 +9,5 @@ python main.py --img_path "../GTTS/Samples" \
 --decay \
 --ckpt_path ./checkpoints_$1 \
 --epochs 100 \
---workers 40 \
+--workers 8 \
 --early_stopping_patience 10
