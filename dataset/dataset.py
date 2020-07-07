@@ -32,6 +32,7 @@ class GTTSDataset(data.Dataset):
         image = Image.open(img_name).convert('RGB')
         annotations = self.annotations.iloc[idx, 3:].to_numpy() # skipping mean and std columns 2 and 3
         annotations = annotations.astype('float').reshape(-1, 1)
+        annotations /= annotations.sum() # Normalize Distributions for Softmax
         sample = {'img_id': img_name, 'image': image, 'annotations': annotations}
 
         if self.transform:
