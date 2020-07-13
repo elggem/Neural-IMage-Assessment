@@ -12,16 +12,19 @@ scenario = "pqd"
 # cd /Users/ralf/Documents/github/_TUBForks/Neural-IMage-Assessment
 path_drive_prefix = "../GTTS/"
 path_patch_distribution_labels = path_drive_prefix + "Labels/%s_labels_test.csv" % (scenario)
+path_scores_labels_subset = path_drive_prefix + "Labels/ParsedVMAF_subset.csv"
 
 sample_names = np.genfromtxt(path_patch_distribution_labels,delimiter=",",dtype=str,encoding='utf-8',usecols=(0)).tolist()
 gt_means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1))
 gt_stds = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2))
 gt_pqds = np.genfromtxt(path_patch_distribution_labels,delimiter=",")[:,3:]
 
-path = "./tests_%s/epoch-34_test_pred.csv" % (scenario)
+path = "./tests_%s/epoch-27_test_pred.csv" % (scenario)
 pred_means = np.genfromtxt(path,delimiter=",",usecols=(1))
 pred_stds = np.genfromtxt(path,delimiter=",",usecols=(2))
 pred_pqds = np.genfromtxt(path,delimiter=",")[:,3:]
+
+
 
 # Basic Plots
 i = 120
@@ -68,6 +71,22 @@ plt.gca().set(title="Mean vs Standard Deviation predictions"); plt.xlabel("mean 
 plt.gca().set(title="distribution of standard deviations, red=predicted, blue=gt", ylabel='Frequency'); plt.hist(pred_stds, bins=100, color='red', range=(0,30), alpha = 0.5); plt.hist(gt_stds, bins=100, color='blue', range=(0,30), alpha = 0.5)
 
 plt.gca().set(title="distribution of standard deviations, red=predicted, blue=gt", ylabel='Frequency'); plt.ylim(0,25); plt.hist(pred_means, bins=100, color='red', range=(0,150), alpha = 0.5); plt.hist(gt_means, bins=100, color='blue', range=(0,150), alpha = 0.5)
+
+
+## MSE Scatter plots
+
+plt.rcParams.update({'figure.figsize':(10,8), 'figure.dpi':100})
+plt.gca().set(title="MSE of ANF Model vs Ground Truth, color coded by VMAF Score", ylabel='Predicted', xlabel='Ground Truth'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(gt_means, pred_means, c=vmaf_scores); plt.colorbar(); plt.savefig("/Users/ralf/Desktop/MSE.png")
+
+
+
+plt.gca().set(title="MSE of ANF Model vs PQD Model, color coded by VMAF Score", ylabel='PQD', xlabel='ANF'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(pred_means_anf, pred_means_pqd, c=vmaf_scores); plt.colorbar(); plt.savefig("/Users/ralf/Desktop/MSE.png")
+
+
+
+
+
+
 
 
 # Experimental Results for low/medium/high resolution/bitrate MSE
