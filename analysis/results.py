@@ -87,8 +87,8 @@ plt.gca().set(title="MSE of ANF Model vs PQD Model, color coded by VMAF Score", 
 
 
 
-plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
-plt.gca().set(title="MSE models vs Ground Truth. red=pqd, blue=anf, green=anv", ylabel='Predicted', xlabel='Ground Truth'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(gt_means, pred_means_pqd, color='red'); plt.scatter(gt_means, pred_means_anf, color='blue'); plt.scatter(gt_means, pred_means_anv, color='green');
+plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':100})
+plt.gca().set(title="MSE models vs Ground Truth. red=pqd, blue=anf, green=anv", ylabel='Predicted', xlabel='Ground Truth'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(gt_means, pred_means_pqd, color='red', marker='+'); plt.scatter(gt_means, pred_means_anf, color='blue', marker='+'); plt.scatter(gt_means, pred_means_anv, color='green', marker='+');
 
 plt.savefig("/Users/ralf/Desktop/MSE.png")
 
