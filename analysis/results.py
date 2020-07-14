@@ -19,7 +19,7 @@ gt_means = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(1
 gt_stds = np.genfromtxt(path_patch_distribution_labels,delimiter=",",usecols=(2))
 gt_pqds = np.genfromtxt(path_patch_distribution_labels,delimiter=",")[:,3:]
 
-path = "./tests_%s/epoch-27_test_pred.csv" % (scenario)
+path = "./tests_%s/epoch-34_test_pred.csv" % (scenario)
 pred_means = np.genfromtxt(path,delimiter=",",usecols=(1))
 pred_stds = np.genfromtxt(path,delimiter=",",usecols=(2))
 pred_pqds = np.genfromtxt(path,delimiter=",")[:,3:]
@@ -27,9 +27,11 @@ pred_pqds = np.genfromtxt(path,delimiter=",")[:,3:]
 
 
 # Basic Plots
-i = 120
+i = 42
+gt_means[i]
 sample_names[i]
-plt.plot(gt_pqds[i]/gt_pqds[i].sum()); plt.plot(pred_pqds[i])
+plt.rcParams.update({'figure.figsize':(5,5), 'figure.dpi':100})
+plt.gca().set(title="%s" % sample_names[i].split("/")[-1], ylabel='score', xlabel='partial PSNR'); plt.plot(gt_pqds[i]/gt_pqds[i].sum()); plt.plot(pred_pqds[i])
 
 gt_pqds[0].sum()
 pred_pqds[0].sum()
@@ -68,9 +70,9 @@ plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':70})
 plt.gca().set(title="Mean vs Standard Deviation predictions"); plt.xlabel("mean patch quality"); plt.ylabel("standard deviation patch quality"); plt.xlim(0,120); plt.ylim(0,25); plt.scatter(pred_means,pred_stds, c=resolution_tags, alpha = 0.5, marker='o'); plt.scatter(gt_means,gt_stds, c=resolution_tags, alpha = 0.5, marker='+')
 
 
-plt.gca().set(title="distribution of standard deviations, red=predicted, blue=gt", ylabel='Frequency'); plt.hist(pred_stds, bins=100, color='red', range=(0,30), alpha = 0.5); plt.hist(gt_stds, bins=100, color='blue', range=(0,30), alpha = 0.5)
+plt.gca().set(title="distribution of standard deviations, red=predicted PQD, blue=gt", ylabel='Frequency'); plt.hist(pred_stds, bins=100, color='red', range=(0,30), alpha = 0.5); plt.hist(gt_stds, bins=100, color='blue', range=(0,30), alpha = 0.5); plt.savefig("/Users/ralf/Desktop/stdhist.png")
 
-plt.gca().set(title="distribution of standard deviations, red=predicted, blue=gt", ylabel='Frequency'); plt.ylim(0,25); plt.hist(pred_means, bins=100, color='red', range=(0,150), alpha = 0.5); plt.hist(gt_means, bins=100, color='blue', range=(0,150), alpha = 0.5)
+plt.gca().set(title="distribution of mean, red=predicted PQD, blue=gt", ylabel='Frequency'); plt.ylim(0,25); plt.hist(pred_means, bins=100, color='red', range=(0,150), alpha = 0.5); plt.hist(gt_means, bins=100, color='blue', range=(0,150), alpha = 0.5); plt.savefig("/Users/ralf/Desktop/meanhist.png")
 
 
 ## MSE Scatter plots
@@ -83,6 +85,12 @@ plt.gca().set(title="MSE of ANF Model vs Ground Truth, color coded by VMAF Score
 plt.gca().set(title="MSE of ANF Model vs PQD Model, color coded by VMAF Score", ylabel='PQD', xlabel='ANF'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(pred_means_anf, pred_means_pqd, c=vmaf_scores); plt.colorbar(); plt.savefig("/Users/ralf/Desktop/MSE.png")
 
 
+
+
+plt.rcParams.update({'figure.figsize':(10,10), 'figure.dpi':50})
+plt.gca().set(title="MSE models vs Ground Truth. red=pqd, blue=anf, green=anv", ylabel='Predicted', xlabel='Ground Truth'); plt.ylim(0,100); plt.xlim(0,100); plt.scatter(gt_means, pred_means_pqd, color='red'); plt.scatter(gt_means, pred_means_anf, color='blue'); plt.scatter(gt_means, pred_means_anv, color='green');
+
+plt.savefig("/Users/ralf/Desktop/MSE.png")
 
 
 
