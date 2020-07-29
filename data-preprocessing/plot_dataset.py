@@ -32,6 +32,11 @@ pqd_annotations[0,2:].sum()
 anv_annotations[0,2:].sum()
 anf_annotations[:,2:].sum(axis=1)
 
+i = 8
+plt.ylabel("value"); plt.xlabel("score bucket"); plt.title("pqd annotation for frame\n %s" % all_samples[i].split('/')[1]); plt.plot(pqd_annotations[i,2:])
+plt.ylabel("value"); plt.xlabel("score bucket"); plt.title("anv annotation for frame\n %s" % all_samples[i].split('/')[1]); plt.plot(anv_annotations[i,2:])
+plt.ylabel("value"); plt.xlabel("score bucket"); plt.title("anf annotation for frame\n %s" % all_samples[i].split('/')[1]); plt.plot(anf_annotations[i,2:])
+
 
 ## Tests related to Probability Mass bug
 orig_pqd = pqd_annotations[0,2:]
